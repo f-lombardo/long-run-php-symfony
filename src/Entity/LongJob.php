@@ -9,8 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class LongJob
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'uuid', unique: true)]
     private $id;
 
     #[ORM\Column(type: 'string', length: 20)]
@@ -28,7 +27,7 @@ class LongJob
     #[ORM\Column(type: 'datetimetz', nullable: true)]
     private $ended_at;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
