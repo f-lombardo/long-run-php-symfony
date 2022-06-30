@@ -57,5 +57,5 @@ class ApplicationTest extends WebTestCase
         $this->client->request('GET', self::GET_URL . $id);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-;    }
+    }
 }
