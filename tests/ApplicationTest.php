@@ -11,6 +11,7 @@ class ApplicationTest extends WebTestCase
     private KernelBrowser $client;
 
     const GET_URL = '/api/long_job/';
+    const POST_URL = '/api/long_job/add';
 
     protected function setUp(): void
     {
@@ -33,5 +34,14 @@ class ApplicationTest extends WebTestCase
         $crawler = $this->client->request('GET', self::GET_URL . $nonExistentUuid);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testInsertingANewJobGivesAcceptedAndReturnsTheJobId(): void
+    {
+        $nonExistentUuid = '9b240acb-f92e-4810-ad96-7be4807178ca';
+
+        $crawler = $this->client->request('POST', self::POST_URL, [], [], [], json_encode(['data' => 'some random data']));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\LongJobRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 #[ORM\Entity(repositoryClass: LongJobRepository::class)]
 class LongJob
@@ -27,6 +29,14 @@ class LongJob
     #[ORM\Column(type: 'datetimetz', nullable: true)]
     private $ended_at;
 
+
+    public function setId(Uuid $uuid): self
+    {
+        $this->id = $uuid->toRfc4122();
+
+        return $this;
+    }
+
     public function getId(): ?string
     {
         return $this->id;
@@ -37,9 +47,9 @@ class LongJob
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(LongJobStatus $status): self
     {
-        $this->status = $status;
+        $this->status = $status->value;
 
         return $this;
     }
@@ -90,5 +100,15 @@ class LongJob
         $this->ended_at = $ended_at;
 
         return $this;
+    }
+
+    public static function fromInitialData(string $data): LongJob {
+        $result = new LongJob();
+
+        $result->setId(new UuidV4());
+        $result->setInitialData($data);
+        $result->setStatus(LongJobStatus::started);
+        $result->setStartedOn(new \DateTime());
+        return $result;
     }
 }
