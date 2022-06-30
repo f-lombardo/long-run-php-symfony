@@ -22,7 +22,7 @@ class ApplicationTest extends WebTestCase
     {
         $notAnUuid = 'bla-bla';
 
-        $crawler = $this->client->request('GET',  self::GET_URL . $notAnUuid);
+        $this->client->request('GET',  self::GET_URL . $notAnUuid);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
@@ -31,15 +31,31 @@ class ApplicationTest extends WebTestCase
     {
         $nonExistentUuid = '9b240acb-f92e-4810-ad96-7be4807178ca';
 
-        $crawler = $this->client->request('GET', self::GET_URL . $nonExistentUuid);
+        $this->client->request('GET', self::GET_URL . $nonExistentUuid);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     public function testInsertingANewJobGivesAcceptedAndReturnsTheJobId(): void
     {
-        $crawler = $this->client->request('POST', self::POST_URL, [], [], [], json_encode(['data' => 'some random data']));
+        $this->client->request('POST', self::POST_URL, [], [], [], json_encode(['data' => 'some random data']));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
     }
+
+    public function testWholeUseCase(): void
+    {
+        $this->client->request('POST', self::POST_URL, [], [], [], json_encode(['data' => 'some random data']));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
+
+        $response = $this->client->getResponse();
+        $responseData = json_decode($response->getContent(), true);
+
+        $id = $responseData['id'];
+
+        $this->client->request('GET', self::GET_URL . $id);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+;    }
 }
