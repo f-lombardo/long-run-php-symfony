@@ -38,8 +38,6 @@ class ApplicationTest extends WebTestCase
 
     public function testInsertingANewJobGivesAcceptedAndReturnsTheJobId(): void
     {
-        $nonExistentUuid = '9b240acb-f92e-4810-ad96-7be4807178ca';
-
         $crawler = $this->client->request('POST', self::POST_URL, [], [], [], json_encode(['data' => 'some random data']));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
